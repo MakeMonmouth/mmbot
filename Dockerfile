@@ -10,4 +10,4 @@ ENV TENDENCI_API_USER=""
 WORKDIR /app
 COPY . .
 RUN pip3 install -r requirements.txt
-CMD ["./mbot.py"]
+CMD ["./mmbot.py"]
