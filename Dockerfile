@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.8-slim-buster
+FROM python:3.8
 
 ENV DISCORD_TOKEN=""
 ENV DISCORD_GUILD=""
