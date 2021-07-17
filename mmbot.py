@@ -3,6 +3,8 @@
 import logging
 import os
 
+import aiohttp
+
 logging.basicConfig(level=logging.INFO)
 import discord
 from discord.ext import commands
@@ -12,6 +14,12 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot = commands.Bot(command_prefix='!')
+api_creds = {
+        "user": os.getenv('TENDENCI_API_USER'),
+        "key": os.getenv('TENDENCI_API_KEY')
+        }
+meeting_uri = f"{os.getenv('TENDENCI_URI')}/api_tasty/v1/event/?format=json"
+tendenci_headers = {"Authorization": f" ApiKey {api_creds['user']}:{api_creds['key']}"}
 
 @bot.command(name='create-channel')
 @commands.has_role('@admin')
@@ -28,7 +36,14 @@ async def on_command_error(ctx, error):
         await ctx.send('You do not have the correct role for this command.')
 
 @bot.command(name='meetup')
-async def get_meetups(ctx):
-    logging.info("Meeting Data requested")
+async def meetup(ctx):
+
+    async with aiohttp.ClientSession(headers=tendenci_headers) as session:
+        async with session.get(meeting_uri) as response:
+
+            meetings = await response.json()
+            for meeting in meetings['objects']:
+                logging.info(meeting)
+
 
 bot.run(TOKEN)
