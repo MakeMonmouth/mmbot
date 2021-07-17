@@ -8,6 +8,6 @@ ENV TENDENCI_API_KEY=""
 ENV TENDENCI_API_USER=""
 
 WORKDIR /app
-RUN pip3 install -r requirements.txt
 COPY . .
+RUN pip3 install -r requirements.txt
 CMD ["./mbot.py"]
