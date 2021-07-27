@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+MVENTORY_URI = os.getenv('MVENTORY_URI')
+MVENTORY_TLS_CHECK = os.getenv('MVENTORY_TLS_CHECK') or True
 
 bot = commands.Bot(command_prefix='!')
 api_creds = {
@@ -22,6 +24,7 @@ api_creds = {
         }
 meeting_uri = f"{os.getenv('TENDENCI_URI')}/api_tasty/v1/event/?format=json"
 tendenci_headers = {"Authorization": f" ApiKey {api_creds['user']}:{api_creds['key']}"}
+
 
 @bot.command(name='create-channel')
 @commands.has_role('@admin')
@@ -76,5 +79,34 @@ async def meetup(ctx):
 
             await ctx.send(msg)
 
+@bot.command(name='findit')
+async def findit(ctx, arg):
+    msg = "MVentory is not configured, please export MVENTORY_URI in the mmbot environment"
+    if MVENTORY_URI is not None:
+        logging.info(f"Searching mventory for {arg}")
+        results = {}
+        results['count'] = 0
+        results['items'] = {}
+        search_uri = f"{MVENTORY_URI}/rest/components/?search={arg}"
+        logging.info(f"Searching {search_uri}")
+        async with aiohttp.ClientSession() as mv_session:
+            logging.info("Session Created")
+            async with mv_session.get(search_uri) as mv_response:
+                if mv_response.status == 200:
+                    logging.info("Reponse was fine, continuing to get details")
+                    search_data = await mv_response.json()
+                    results['count'] = len(search_data)
+                    if results['count'] > 0:
+                        logging.info(f"Found {results['count']} results")
+                        msg = f"{results['count']} results found:\n\n"
+                        for i in search_data:
+                            logging.info(i)
+                            msg = msg + f"{i['name']} was found at {i['storage_bin'][0]['name']} ( {i['storage_bin'][0]['unit_row']}, {i['storage_bin'][0]['unit_column']})\n"
+                    else:
+                        msg = f"No results found for {arg}"
+                else:
+                    msg = f"Error contacting mventory - {response.status}"
+
+    await ctx.send(msg)
 
 bot.run(TOKEN)
