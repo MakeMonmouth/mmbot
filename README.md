@@ -22,6 +22,7 @@ DISCORD_GUILD="Your Discord Guild/Server"
 TENDENCI_URI="The URI of your Tendenci instance"
 TENDENCI_API_KEY="The API Key for Tendenci"
 TENDENCI_API_USER="The username you use to log in to tendenci"
+MVENTORY_URI="The address for your MVentory installation"
 ```
 
 
