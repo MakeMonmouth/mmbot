@@ -7,6 +7,6 @@ metadata:
   annotations:
     github.com/project-slug: makemonmouth/mmbot
 spec:
-  type: bot
+  type: website
   owner: matt@doics.co
   lifecycle: production
