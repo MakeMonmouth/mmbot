@@ -3,9 +3,9 @@ kind: Component
 metadata:
   name: mmbot
   description: A bot for Make Monmouth
-  # Example for optional annotations
   annotations:
-    github.com/project-slug: makemonmouth/mmbot
+    github.com/project-slug: 'makemonmouth/mmbot'
+    grafana/tag-selector: "mmbot"
 spec:
   type: website
   owner: matt@doics.co
