@@ -10,12 +10,23 @@ import arrow
 import humanize
 
 logging.basicConfig(level=logging.INFO)
+import sentry_sdk
+sentry_sdk.init(
+    os.getenv('SENTRY_DSN'),
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
+
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
 import datetime as dt
 from calendar import monthrange
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
