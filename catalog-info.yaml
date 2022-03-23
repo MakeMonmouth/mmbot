@@ -11,3 +11,5 @@ spec:
   type: website
   owner: matt@doics.co
   lifecycle: production
+  dependsOn: 
+    - Resource:default/MVentory
