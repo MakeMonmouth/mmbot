@@ -12,8 +12,6 @@ import humanize
 from dotenv import load_dotenv
 load_dotenv()
 
-###### custom handler
-
 import json
 import requests
 from requests.adapters import HTTPAdapter
@@ -87,16 +85,9 @@ httpHandler = CustomHttpHandler(
 # add formatter to custom http handler
 httpHandler.setFormatter(formatter)
 
-#####
-
 logging.basicConfig(level=logging.NOTSET)
 logger = logging.getLogger("mmbot")
 
-#httpHandler = logging.handlers.HTTPHandler(
-#        host=os.getenv("VECTOR_ENDPOINT"),
-#        url="/",
-#        secure=True
-#        )
 httpHandler.setLevel(logging.DEBUG)
 logger.addHandler(httpHandler)
 
