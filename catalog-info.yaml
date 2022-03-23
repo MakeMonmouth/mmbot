@@ -8,8 +8,10 @@ metadata:
     grafana/tag-selector: "mmbot"
     prometheus.io/alert: "memUsage"
 spec:
-  type: website
+  type: service
   owner: matt@doics.co
   lifecycle: production
   dependsOn: 
     - Resource:default/MVentory
+  consumesApis:
+    - mventory-api
