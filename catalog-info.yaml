@@ -5,8 +5,9 @@ metadata:
   description: A bot for Make Monmouth
   annotations:
     github.com/project-slug: 'makemonmouth/mmbot'
-    grafana/tag-selector: "mmbot"
+    grafana/tag-selector: mmbot
     prometheus.io/alert: all
+    sentry.io/project-slug: mmbot
 spec:
   type: service
   owner: matt@doics.co
