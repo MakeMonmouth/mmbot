@@ -16,6 +16,14 @@ import json
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from prometheus_client import start_http_server, Summary, Counter
+import time
+
+meetup_counter = Counter(
+        'requests_for_meetup_details',
+        'The number of times we have been asked for the next meetup date'
+        )
+
 
 class CustomHttpHandler(logging.Handler):
     def __init__(self, url: str, token: str, silent: bool = True):
@@ -151,8 +159,10 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
 
+# Decorate function with metric.
 @bot.command(name='meetup')
 async def meetup(ctx):
+    meetup_counter.inc()
     logger.info("Meetup routine called")
     next_mtg = get_next_meeting()
     msg = f"Our next meeting is on {dt.datetime.strftime(next_mtg, '%A, %d %B')}"
@@ -189,4 +199,7 @@ async def findit(ctx, arg):
 
     await ctx.send(msg)
 
-bot.run(TOKEN)
+if __name__ == '__main__':
+    # Start up the server to expose the metrics.
+    start_http_server(int(os.getenv("PORT")))
+    bot.run(TOKEN)
