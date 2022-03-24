@@ -6,7 +6,6 @@ metadata:
   annotations:
     github.com/project-slug: 'makemonmouth/mmbot'
     grafana/tag-selector: "mmbot"
-    prometheus.io/alert: "ConsulUp"
 spec:
   type: service
   owner: matt@doics.co
