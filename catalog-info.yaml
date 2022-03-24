@@ -6,6 +6,7 @@ metadata:
   annotations:
     github.com/project-slug: 'makemonmouth/mmbot'
     grafana/tag-selector: "mmbot"
+    prometheus.io/alert: "sloth-slo-sli-recordings-mmbot-requests-sloth-slo-mmbot-requests-0"
 spec:
   type: service
   owner: matt@doics.co
