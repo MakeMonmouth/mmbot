@@ -1,1 +1,1 @@
-worker: python3 mmbot.py
+web: python3 mmbot.py
