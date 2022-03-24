@@ -20,8 +20,13 @@ from prometheus_client import start_http_server, Summary, Counter
 import time
 
 meetup_counter = Counter(
-        'requests_for_meetup_details',
+        'meetup_details',
         'The number of times we have been asked for the next meetup date'
+        )
+
+component_lookup_counter = Counter(
+        'component_lookups',
+        'The number of times we have been asked to lookup a component'
         )
 
 
@@ -171,6 +176,7 @@ async def meetup(ctx):
 
 @bot.command(name='findit')
 async def findit(ctx, arg):
+    component_lookup_counter.inc()
     msg = "MVentory is not configured, please export MVENTORY_URI in the mmbot environment"
     if MVENTORY_URI is not None:
         logger.info(f"Searching mventory for {arg}")
