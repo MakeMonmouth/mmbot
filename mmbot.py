@@ -87,43 +87,23 @@ formatter = logging.Formatter(json.dumps({
     'message': '%(message)s'
 }))
 
-# create a custom http logger handler
-httpHandler = CustomHttpHandler(
-    url=os.getenv("VECTOR_ENDPOINT"),
-    token='<YOUR_TOKEN>',
-    silent=False
-)
-
-
-# add formatter to custom http handler
-httpHandler.setFormatter(formatter)
-
 logging.basicConfig(level=logging.NOTSET)
 logger = logging.getLogger("mmbot")
-
-httpHandler.setLevel(logging.DEBUG)
-logger.addHandler(httpHandler)
 
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
-
 logger.addHandler(ch)
 
-logger.info(f"Setup HTTP Handler to point to {os.getenv('VECTOR_ENDPOINT')}")
+logger.info(f"Setup logging handlers")
 
-
-import sentry_sdk
-sentry_sdk.init(
-    os.getenv('SENTRY_DSN'),
-
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0
-)
 
 import discord
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+
 from discord.ext import commands
 
 import datetime as dt
@@ -134,20 +114,20 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 MVENTORY_URI = os.getenv('MVENTORY_URI')
 MVENTORY_TLS_CHECK = os.getenv('MVENTORY_TLS_CHECK') or True
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='!', intents=intents)
 
-def first_and_last_thursday(year, month):
+def first_and_third_tuesday(year, month):
     dates = [dt.date(year, month, x + 1) for x in range(monthrange(year, month)[1])]
-    return [x for x in dates if x.weekday() == 3][0:3:2]
+    return [x for x in dates if x.weekday() == 1][0:3:2]
 
 def get_next_meeting():
     date = dt.date.today()
-    first, second = first_and_last_thursday(date.year, date.month)
+    first, second = first_and_third_tuesday(date.year, date.month)
     if date < first:
         return first
     if date < second:
         return second
-    first, _ = first_and_last_thursday(date.year + (1 if date.month == 12 else 0), (date.month % 12) + 1)
+    first, _ = first_and_third_tuesday(date.year + (1 if date.month == 12 else 0), (date.month % 12) + 1)
     return first
 
 @bot.command(name='create-channel')
@@ -171,7 +151,7 @@ async def meetup(ctx):
     logger.info("Meetup routine called")
     next_mtg = get_next_meeting()
     msg = f"Our next meeting is on {dt.datetime.strftime(next_mtg, '%A, %d %B')}"
-    msg = msg + f" between 8pm and 10pm at Woodland Stores, Wyesham"
+    msg = msg + f" between 7pm and 9pm at Woodland Stores, Wyesham"
     await ctx.send(msg)
 
 @bot.command(name='findit')
